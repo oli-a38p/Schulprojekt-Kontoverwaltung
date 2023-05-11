@@ -69,7 +69,7 @@ class BankAccountListBase {
 
     AddAccount(AccountOwner) {
         if (this.FreeSpace < 1) {
-            throw new AccountError("Fehler: Kontoliste ist voll!");
+            throw new AccountError('Fehler: Kontoliste vom Typ ' + AccountTypeName[this._atListType] + ' ist voll!');
         }
 
         let clsAccount = AccountTypeClasses[this._atListType];
@@ -79,9 +79,9 @@ class BankAccountListBase {
             aAccount.AccountOwner = AccountOwner;
             this.#aAccounts.push(aAccount);
 
-            return true;
+            return aAccount;
         }
-        return false;
+        return null;
     }
 
     GetAccountList() {
@@ -172,7 +172,7 @@ class AccountManager {
             // AccountError abfangen
             if (err instanceof AccountError) {
                 this.#sLastError = err.message;
-                return false;
+                return null;
             } else {
                 throw err;
             }

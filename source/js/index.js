@@ -62,14 +62,11 @@ $(() => {
             let sAccountName = eForm.getEditor('accountName').option('value');
             let atAccountType = AccountTypeName.indexOf(sAccountType);
 
-            if (accManager.AddAccount(atAccountType, sAccountOwner, sAccountName)) {
-                $(() => {
-                    DevExpress.ui.notify('Konto erfolgreich angelegt.', 'info');
-                });
+            aAccount = accManager.AddAccount(atAccountType, sAccountOwner, sAccountName);
+            if (aAccount != null) {
+                $('#result').html('<span class="success-text">Das Konto "' + sAccountName + '" (Kontonr. ' + aAccount.ID + ') für den Besitzer ' + sAccountOwner + ' wurde erfolgreich erstellt.</span>');
             } else {
-                $(() => {
-                    DevExpress.ui.notify('Das Konto konnte nicht angelegt werden. (' + accManager.LastError + ')', 'error');
-                });
+                $('#result').html('<span class="error-text">Das Konto konnte nicht angelegt werden. (' + accManager.LastError + ')</span>');
             }
 
             // Standardevent verhindern
@@ -82,7 +79,7 @@ $(() => {
             id: 0,
             text: 'Neues Konto anlegen',
             icon: 'user',
-            content: '<form id="account-creation-form-container"><div id="account-creation-form"></div></form>',
+            content: '<form id="account-creation-form-container"><div id="account-creation-form"></div></form><p id="result"></p>',
             func: AccountCreationProc
         }, {
             id: 1,
@@ -114,5 +111,9 @@ $(() => {
             $('#tab-content').html(e.itemData.content);
             e.itemData.func();
         },
+        onInitialized(e) {
+            $('#tab-content').html(aTabs[0].content);
+            aTabs[0].func();
+        }
     }).dxTabs('instance');
 });
