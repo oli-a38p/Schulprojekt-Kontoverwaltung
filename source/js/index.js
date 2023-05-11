@@ -140,6 +140,77 @@ $(() => {
         });
     };
 
+    let AccountDepositProc = function () {
+        // Eingabeformular für Einzahlung
+        let eForm = $('#account-deposit-form').dxForm({
+            colCount: 1,
+            items: [{
+                itemType: 'group',
+                caption: 'Einzahlung',
+                colCount: 1,
+                items: [{
+                    dataField: 'accountID',
+                    isRequired: true,
+                    editorType: 'dxSelectBox',
+                    editorOptions: {
+                        // Datenquelle
+                        dataSource: new DevExpress.data.DataSource({
+                            store: accManager.AccountSelectionValues,
+                            paginate: true,
+                            pageSize: 10,
+                            sort: [  
+                                { desc: false }  
+                            ] 
+                        }),
+                        valueExpr: 'ID',
+                        displayExpr: 'displayText',
+                        searchEnabled: true
+                    },
+                    label: {
+                        text: 'Konto auswählen'
+                    },
+                    validationRules: [{ type: 'required' }]
+                }, {
+                    dataField: 'accountBalance',
+                    editorType: 'dxNumberBox',
+                    editorOptions: {
+                        disabled: true,
+                        format: ',##0.00 EUR',
+                    },
+                    label: {
+                        text: 'Vorhandenes Guthaben'
+                    }
+                }, {
+                    dataField: 'accountDeposit',
+                    editorType: 'dxNumberBox',
+                    editorOptions: {
+                        format: ',##0.00 EUR',
+                    },
+                    label: {
+                        text: 'Einzuzahlender Wert'
+                    },
+                    validationRules: [{ type: 'required' }]
+                }, {
+                    // Button für Bestätigung
+
+                    itemType: 'button',
+                    buttonOptions: {
+                        text: 'Kontoauszug erstellen',
+                        useSubmitBehavior: true
+                    }
+                }]
+            }]
+        }).dxForm('instance');
+
+        eForm.getEditor('accountID').on('valueChanged', function(e) {
+            let aAccID = e.value;
+            let iBalance = accManager.GetAccount(aAccID).Balance;
+
+            // Guthaben anzeigen
+            eForm.getEditor('accountBalance').option('value', iBalance);
+        });
+    }
+
     const aTabs = [
         {
             id: 0,
@@ -176,7 +247,11 @@ $(() => {
             id: 2,
             text: 'Einzahlung',
             icon: 'add',
-            content: 'Einzahlung'
+            content:
+                '<form id="account-deposit-form-container">' +
+                    '<div id="account-deposit-form"></div>' +
+                '</form>',
+            func: AccountDepositProc
         }, {
             id: 3,
             text: 'Auszahlung',
