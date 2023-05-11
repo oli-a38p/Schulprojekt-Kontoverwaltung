@@ -56,36 +56,122 @@ $(() => {
         }).dxForm('instance');
 
         $('#account-creation-form-container').on('submit', function(e) {
-            // Fahrplandaten abholen
+            // Daten abholen
             let sAccountType = eForm.getEditor('accountType').option('value');
             let sAccountOwner = eForm.getEditor('accountOwner').option('value');
             let sAccountName = eForm.getEditor('accountName').option('value');
             let atAccountType = AccountTypeName.indexOf(sAccountType);
 
-            aAccount = accManager.AddAccount(atAccountType, sAccountOwner, sAccountName);
+            // Konto anlegen
+            aAccount = accManager.AddAccount(atAccountType, sAccountName, sAccountOwner);
             if (aAccount != null) {
-                $('#result').html('<span class="success-text">Das Konto "' + sAccountName + '" (Kontonr. ' + aAccount.ID + ') für den Besitzer ' + sAccountOwner + ' wurde erfolgreich erstellt.</span>');
+                $('#result-text').html('<span class="success-text">Das Konto "' + sAccountName + '" (Kontonr. ' + aAccount.ID + ') für den Besitzer ' + sAccountOwner + ' wurde erfolgreich erstellt.</span>');
             } else {
-                $('#result').html('<span class="error-text">Das Konto konnte nicht angelegt werden. (' + accManager.LastError + ')</span>');
+                $('#result-text').html('<span class="error-text">Das Konto konnte nicht angelegt werden. (' + accManager.LastError + ')</span>');
+            }
+            $('#result').show();
+
+            // Standardevent verhindern
+            e.preventDefault();
+        });
+    };
+
+    let AccountStatementProc = function () {
+        // Eingabeformular für Kontoauszug
+        let eForm = $('#account-statement-form').dxForm({
+            colCount: 1,
+            items: [{
+                itemType: 'group',
+                caption: 'Kontoauszug erstellen',
+                colCount: 1,
+                items: [{
+                    dataField: 'accountID',
+                    isRequired: true,
+                    editorType: 'dxSelectBox',
+                    editorOptions: {
+                        // Datenquelle
+                        dataSource: new DevExpress.data.DataSource({
+                            store: accManager.AccountSelectionValues,
+                            paginate: true,
+                            pageSize: 10,
+                            sort: [  
+                                { desc: false }  
+                            ] 
+                        }),
+                        valueExpr: 'ID',
+                        displayExpr: 'displayText',
+                        searchEnabled: true
+                    },
+                    label: {
+                        text: 'Konto auswählen'
+                    },
+                    validationRules: [{ type: 'required' }]
+                }, {
+                    // Button für Bestätigung
+
+                    itemType: 'button',
+                    buttonOptions: {
+                        text: 'Kontoauszug erstellen',
+                        useSubmitBehavior: true
+                    }
+                }]
+            }]
+        }).dxForm('instance');
+
+        $('#account-statement-form-container').on('submit', function(e) {
+            // Daten abholen
+            let iAccountID = eForm.getEditor('accountID').option('value');
+            let aAccount = accManager.GetAccount(iAccountID);
+
+            if (aAccount != null) {
+                $('#result-accountID').text(aAccount.ID);
+                $('#result-accountType').text(AccountTypeName[aAccount.Type]);
+                $('#result-accountCreationDate').text(aAccount.CreationDateString);
+                $('#result-accountName').text(aAccount.Name);
+                $('#result-accountOwner').text(aAccount.Owner);
+                $('#result-accountBalance').text(aAccount.Balance.toFixed(2) + ' EUR');
+                $('#result').show();
+            } else {
+                $('#result').hide();
             }
 
             // Standardevent verhindern
             e.preventDefault();
         });
-    }
+    };
 
     const aTabs = [
         {
             id: 0,
             text: 'Neues Konto anlegen',
             icon: 'user',
-            content: '<form id="account-creation-form-container"><div id="account-creation-form"></div></form><p id="result"></p>',
+            content: 
+                '<form id="account-creation-form-container">' +
+                    '<div id="account-creation-form"></div>' + 
+                '</form>' +
+                '<div id="result">' +
+                    '<p id="result-text"></p>' +
+                '</div>',
             func: AccountCreationProc
         }, {
             id: 1,
             text: 'Kontoauszug',
             icon: 'doc',
-            content: 'Kontoauszug'
+            content: 
+                '<form id="account-statement-form-container">' +
+                    '<div id="account-statement-form"></div>' +
+                '</form>' +
+                '<div id="result">' +
+                    '<hr>' +
+                    '<h3>Kontoauszug</h3>' +
+                    '<p>Kontonr.: <span class="text-bold" id="result-accountID"></span></p>' +
+                    '<p>Kontotyp: <span class="text-bold" id="result-accountType"></span></p>' +
+                    '<p>Konto angelegt: <span class="text-bold" id="result-accountCreationDate"></span></p>' +
+                    '<p>Kontoname: <span class="text-bold" id="result-accountName"></span></p>' +
+                    '<p>Kontoinhaber: <span class="text-bold" id="result-accountOwner"></span></p>' +
+                    '<p>Guthaben: <span class="text-bold" id="result-accountBalance"></span></p>' +
+                '</div>',
+            func: AccountStatementProc
         }, {
             id: 2,
             text: 'Einzahlung',

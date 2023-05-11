@@ -18,8 +18,10 @@ const AccountTypesVisible = [
 class AccountError extends Error {}
 
 class BankAccountBase {
-    AccountOwner = '';
-    AccountType = 0;
+    CreationDate = '';
+    Name = '';
+    Owner = '';
+    Type = 0;
     Balance = 0;
     ID = 0;
 
@@ -29,20 +31,25 @@ class BankAccountBase {
         }
 
         this.ID = ID;
+        this.CreationDate = new Date();
+    }
+
+    get CreationDateString() {
+        return this.CreationDate.toLocaleString();
     }
 }
 
 class BankSavingAccount extends BankAccountBase {
     constructor(ID) {
         super(ID);
-        this.AccountType = AccountType.SavingAccount;
+        this.Type = AccountType.SavingAccount;
     }
 }
 
 class BankCheckingAccount extends BankAccountBase {
     constructor(ID) {
         super(ID);
-        this.AccountType = AccountType.CheckingAccount;
+        this.Type = AccountType.CheckingAccount;
     }
 }
 
@@ -67,7 +74,7 @@ class BankAccountListBase {
         this.#iIDPoolMax = IDPoolMax;
     }
 
-    AddAccount(AccountOwner) {
+    AddAccount(AccountName, AccountOwner) {
         if (this.FreeSpace < 1) {
             throw new AccountError('Fehler: Kontoliste vom Typ ' + AccountTypeName[this._atListType] + ' ist voll!');
         }
@@ -76,7 +83,8 @@ class BankAccountListBase {
         let iAvailableID = this.#GetAvailableID();
         if (iAvailableID != -1) {
             let aAccount = new clsAccount(iAvailableID);
-            aAccount.AccountOwner = AccountOwner;
+            aAccount.Name = AccountName;
+            aAccount.Owner = AccountOwner;
             this.#aAccounts.push(aAccount);
 
             return aAccount;
@@ -84,8 +92,16 @@ class BankAccountListBase {
         return null;
     }
 
-    GetAccountList() {
+    get AccountList() {
         return this.#aAccounts;
+    }
+
+    GetAccount(ID) {
+        for (let i = 0; i <= this.#aAccounts.length - 1; i++) {
+            if (this.#aAccounts[i].ID == ID) {
+                return this.#aAccounts[i];
+            }
+        }
     }
 
     #GetAvailableID() {
@@ -156,7 +172,7 @@ class AccountManager {
         this.#aCheckingAccounts = new BankCheckingAccountList(20, 29);
     }
 
-    AddAccount(Type, AccountOwner) {
+    AddAccount(Type, AccountName, AccountOwner) {
         if (Type == AccountType.Unknown) {
             throw new AccountError('Fehler: Ungültiger Konto-Typ');
         }
@@ -164,9 +180,9 @@ class AccountManager {
         try {
             switch (Type) {
                 case AccountType.SavingAccount:
-                    return this.#aSavingAccounts.AddAccount(AccountOwner);
+                    return this.#aSavingAccounts.AddAccount(AccountName, AccountOwner);
                 case AccountType.CheckingAccount:
-                    return this.#aCheckingAccounts.AddAccount(AccountOwner);
+                    return this.#aCheckingAccounts.AddAccount(AccountName, AccountOwner);
             }
         } catch (err) {
             // AccountError abfangen
@@ -177,6 +193,39 @@ class AccountManager {
                 throw err;
             }
         }
+    }
+
+    GetAccount(ID) {
+        let aAccount = this.#aSavingAccounts.GetAccount(ID);
+        if (aAccount != null) {
+            return aAccount;
+        }
+
+        aAccount = this.#aCheckingAccounts.GetAccount(ID);
+        if (aAccount != null) {
+            return aAccount;
+        }
+
+        return null;
+    }
+
+    get AccountSelectionValues() {
+        let aAccounts = this.Accounts;
+        let aResult = [];
+
+        aAccounts.forEach((element) => {
+            aResult.push({
+                'ID': element.ID,
+                'displayText': 'Nr. ' + element.ID + ' | Name ' + element.Name + ' | Inhaber ' + element.Owner
+            });
+        });
+
+        return aResult;
+    }
+
+    get Accounts() {
+        let aAccs = [].concat(this.#aSavingAccounts.AccountList, this.#aCheckingAccounts.AccountList);
+        return aAccs;
     }
 
     get CheckingAccounts() {
