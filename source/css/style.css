@@ -1,0 +1,9 @@
+body {
+    width: 90%;
+    margin: 30px auto;
+}
+
+#tab-content {
+    border: 1px solid #4d4d4d;
+    padding: 30px;
+}
