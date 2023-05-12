@@ -166,6 +166,7 @@ class AccountManager {
     #aCheckingAccounts;
     #aSavingAccounts;
     #sLastError = '';
+    #aValueList = [];
 
     constructor() {
         this.#aSavingAccounts = new BankSavingAccountList(10, 19);
