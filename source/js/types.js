@@ -22,7 +22,7 @@ class BankAccountBase {
     Name = '';
     Owner = '';
     Type = 0;
-    Balance = 10.5;
+    Balance = 0;
     ID = 0;
 
     constructor(ID) {
