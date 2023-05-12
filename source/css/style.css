@@ -1,7 +1,22 @@
 body {
     width: 90%;
     margin: 30px auto;
-    color: #2a2a2a;
+    background-color: #2a2a2a;
+    color: #dedede;
+}
+
+noscript {
+    color: #ff531a;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#tabs {
+    display: none; /* wird zur Laufzeit gesetzt */
+}
+
+.info-text {
+    font-style: italic;
 }
 
 #tab-content {
@@ -22,5 +37,5 @@ body {
 }
 
 #result {
-    display: none;
+    display: none; /* wird zur Laufzeit gesetzt */
 }
