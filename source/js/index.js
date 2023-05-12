@@ -77,6 +77,24 @@ const aTabs = [
                 '<p class="success-text">Das Konto <span id="result-accountName" class="text-bold"></span> des Inhabers <span id="result-accountOwner" class="text-bold"></span> wurde erfolgreich gelöscht!</p>' +
             '</div>',
         func: AccountDeletionProc
+    }, {
+        id: 5,
+        text: 'Systeminformationen',
+        icon: 'info',
+        content:
+            '<div class="sub-section">' +
+            '<h3>Speicherverbrauch</h3>' +
+            '<p>Angelegte Sparkonten: <span class="text-bold" id="count-savingAccounts"></span> / <span class="text-bold" id="count-maxSavingAccounts"></span></p>' +
+            '<p>Angelegte Kontokorrentkonten: <span class="text-bold" id="count-checkingAccounts"></span> / <span class="text-bold" id="count-maxCheckingAccounts"></span></p>' +
+            '<p>Freie Sparkonto-IDs: <span class="text-bold" id="count-freeSavingAccounts"></span></p>' +
+            '<p>Freie Kontokorrentkonto-IDs: <span class="text-bold" id="count-freeCheckingAccounts"></span></p>' +
+            '</div>' +
+            '<hr>' +
+            '<div class="sub-section">' +
+            '<h3>Unterstützung</h3>' +
+            '<p>Unterstützt durch <a href="https://js.devexpress.com/" target="_blank">DevExtreme JavaScript-Komponenten</a> Version <span class="text-bold" id="dx-version"></span> von DevExpress.</p>' +
+            '</div>',
+        func: SysInfo
     }
 ];
 

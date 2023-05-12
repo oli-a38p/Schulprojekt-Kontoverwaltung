@@ -3,7 +3,7 @@ let AccountDeletionProc = function () {
         colCount: 1,
         items: [{
             itemType: 'group',
-            caption: 'Kontolöschun',
+            caption: 'Konto löschen',
             colCount: 1,
             items: [{
                 dataField: 'accountID',
