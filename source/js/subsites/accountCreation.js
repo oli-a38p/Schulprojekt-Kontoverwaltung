@@ -1,3 +1,6 @@
+/**
+ * Funktions-Variable zum Laden der Konto-Erstellung
+ */
 let AccountCreationProc = function () {
     // Eingabeformular für Kontoerstellung
     let eForm = $('#account-creation-form').dxForm({
@@ -7,6 +10,7 @@ let AccountCreationProc = function () {
             caption: 'Konto erstellen',
             colCount: 1,
             items: [{
+                // Datenfeld für die Kontotyp-Auswahl
                 dataField: 'accountType',
                 isRequired: true,
                 editorType: 'dxSelectBox',
@@ -29,6 +33,7 @@ let AccountCreationProc = function () {
                 },
                 validationRules: [{ type: 'required' }]
             }, {
+                // Datenfeld für die Einabe des Kontonamen
                 dataField: 'accountName',
                 editorType: 'dxTextBox',
                 label: {
@@ -36,6 +41,7 @@ let AccountCreationProc = function () {
                 },
                 validationRules: [{ type: 'required' }]
             }, {
+                // Datenfeld für die Eingabe des Kontoinhabers
                 dataField: 'accountOwner',
                 editorType: 'dxTextBox',
                 label: {
@@ -44,7 +50,6 @@ let AccountCreationProc = function () {
                 validationRules: [{ type: 'required' }]
             }, {
                 // Button für Bestätigung
-
                 itemType: 'button',
                 buttonOptions: {
                     text: 'Konto anlegen',
@@ -54,6 +59,7 @@ let AccountCreationProc = function () {
         }]
     }).dxForm('instance');
 
+    // Event, welches bei Knopfdruck ausgelöst wird
     $('#account-creation-form-container').on('submit', function(e) {
         // Daten abholen
         let sAccountType = eForm.getEditor('accountType').option('value');

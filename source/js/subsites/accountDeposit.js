@@ -1,3 +1,6 @@
+/**
+ * Funktions-Variable zum Laden der Konto-Einzahlung
+ */
 let AccountDepositProc = function () {
     // Eingabeformular für Einzahlung
     let eForm = $('#account-deposit-form').dxForm({
@@ -7,6 +10,7 @@ let AccountDepositProc = function () {
             caption: 'Einzahlung',
             colCount: 1,
             items: [{
+                // Datenfeld zur Auswahl des Kontos
                 dataField: 'accountID',
                 isRequired: true,
                 editorType: 'dxSelectBox',
@@ -29,6 +33,7 @@ let AccountDepositProc = function () {
                 },
                 validationRules: [{ type: 'required' }]
             }, {
+                // Datenfeld, welches den aktuellen Kontostand des ausgewählten Kontos anzeigt
                 dataField: 'accountBalance',
                 editorType: 'dxNumberBox',
                 editorOptions: {
@@ -36,9 +41,10 @@ let AccountDepositProc = function () {
                     format: ',##0.00 EUR',
                 },
                 label: {
-                    text: 'Vorhandenes Guthaben'
+                    text: 'Aktueller Kontostand'
                 }
             }, {
+                // Datenfeld für die Eingabe der Einzahlung
                 dataField: 'accountDeposit',
                 editorType: 'dxNumberBox',
                 editorOptions: {
@@ -47,12 +53,11 @@ let AccountDepositProc = function () {
                     max: 1000000000
                 },
                 label: {
-                    text: 'Einzuzahlender Wert'
+                    text: 'Einzahlung'
                 },
                 validationRules: [{ type: 'required' }]
             }, {
                 // Button für Bestätigung
-
                 itemType: 'button',
                 buttonOptions: {
                     text: 'Einzahlen',
@@ -62,6 +67,7 @@ let AccountDepositProc = function () {
         }]
     }).dxForm('instance');
 
+    // Zeigt den aktuellen Kontostand im Datenfeld "aktueller Kontostand" an, wenn ein Konto ausgewählt wurde
     eForm.getEditor('accountID').on('valueChanged', function(e) {
         let aAccID = e.value;
         let iBalance = accManager.GetAccount(aAccID).Balance;
@@ -70,6 +76,7 @@ let AccountDepositProc = function () {
         eForm.getEditor('accountBalance').option('value', iBalance);
     });
 
+    // Event, welches bei Knopfdruck ausgelöst wird
     $('#account-deposit-form-container').on('submit', function(e) {
         // Daten abholen
         let iAccountID = eForm.getEditor('accountID').option('value');

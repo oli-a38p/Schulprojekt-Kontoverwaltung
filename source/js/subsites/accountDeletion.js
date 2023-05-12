@@ -1,3 +1,6 @@
+/**
+ * Funktions-Variable zum Laden der Konto-Löschung
+ */
 let AccountDeletionProc = function () {
     let eForm = $('#account-deletion-form').dxForm({
         colCount: 1,
@@ -6,6 +9,7 @@ let AccountDeletionProc = function () {
             caption: 'Konto löschen',
             colCount: 1,
             items: [{
+                // Datenfeld für die Kontotyp-Auswahl
                 dataField: 'accountID',
                 isRequired: true,
                 editorType: 'dxSelectBox',
@@ -29,7 +33,6 @@ let AccountDeletionProc = function () {
                 validationRules: [{ type: 'required' }]
             }, {
                 // Button für Bestätigung
-
                 itemType: 'button',
                 buttonOptions: {
                     text: 'Löschen',
@@ -39,6 +42,7 @@ let AccountDeletionProc = function () {
         }]
     }).dxForm('instance');
 
+    // Event, welches bei Knopfdruck ausgelöst wird
     $('#account-deletion-form-container').on('submit', function(e) {
         // Daten abholen
         let iAccountID = eForm.getEditor('accountID').option('value');
@@ -48,9 +52,11 @@ let AccountDeletionProc = function () {
             let sName = aAccount.Name;
             let sOwner = aAccount.Owner;
 
+            // Konto löschen
             accManager.RemoveAccount(iAccountID);
             eForm.getEditor('accountID').option('dataSource', accManager.AccountSelectionValues);
 
+            // Ausgabe ausfüllen
             $('#result-accountName').text(sName);
             $('#result-accountOwner').text(sOwner);
             $('#result').show();

@@ -1,3 +1,6 @@
+/**
+ * Funktions-Variable zum Laden der Konto-Auszugs-Erstellung
+ */
 let AccountStatementProc = function () {
     // Eingabeformular für Kontoauszug
     let eForm = $('#account-statement-form').dxForm({
@@ -7,6 +10,7 @@ let AccountStatementProc = function () {
             caption: 'Kontoauszug erstellen',
             colCount: 1,
             items: [{
+                // Datenfeld zur Auswahl des Kontos
                 dataField: 'accountID',
                 isRequired: true,
                 editorType: 'dxSelectBox',
@@ -30,7 +34,6 @@ let AccountStatementProc = function () {
                 validationRules: [{ type: 'required' }]
             }, {
                 // Button für Bestätigung
-
                 itemType: 'button',
                 buttonOptions: {
                     text: 'Kontoauszug erstellen',
@@ -40,12 +43,14 @@ let AccountStatementProc = function () {
         }]
     }).dxForm('instance');
 
+    // Event, welches bei Knopfdruck ausgelöst wird
     $('#account-statement-form-container').on('submit', function(e) {
         // Daten abholen
         let iAccountID = eForm.getEditor('accountID').option('value');
         let aAccount = accManager.GetAccount(iAccountID);
 
         if (aAccount != null) {
+            // Kontoauszug ausfüllen
             $('#result-accountID').text(aAccount.ID);
             $('#result-accountType').text(AccountTypeName[aAccount.Type]);
             $('#result-accountCreationDate').text(aAccount.CreationDate.toLocaleString());

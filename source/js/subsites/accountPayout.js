@@ -1,3 +1,6 @@
+/**
+ * Funktions-Variable zum Laden der Konto-Auszahlung
+ */
 let AccountPayoutProc = function () {
     // Eingabeformular für Auszahlung
     let eForm = $('#account-payout-form').dxForm({
@@ -7,6 +10,7 @@ let AccountPayoutProc = function () {
             caption: 'Auszahlung',
             colCount: 1,
             items: [{
+                // Datenfeld zur Auswahl des Kontos
                 dataField: 'accountID',
                 isRequired: true,
                 editorType: 'dxSelectBox',
@@ -29,6 +33,7 @@ let AccountPayoutProc = function () {
                 },
                 validationRules: [{ type: 'required' }]
             }, {
+                // Datenfeld, welches den aktuellen Kontostand des ausgewählten Kontos anzeigt
                 dataField: 'accountBalance',
                 editorType: 'dxNumberBox',
                 editorOptions: {
@@ -36,9 +41,10 @@ let AccountPayoutProc = function () {
                     format: ',##0.00 EUR',
                 },
                 label: {
-                    text: 'Vorhandenes Guthaben'
+                    text: 'Aktueller Kontostand'
                 }
             }, {
+                // Datenfeld für die Eingabe der Auszahlung
                 dataField: 'accountPayout',
                 editorType: 'dxNumberBox',
                 editorOptions: {
@@ -47,12 +53,11 @@ let AccountPayoutProc = function () {
                     max: 1000000000
                 },
                 label: {
-                    text: 'Auszuzahlender Wert'
+                    text: 'Auszahlung'
                 },
                 validationRules: [{ type: 'required' }]
             }, {
                 // Button für Bestätigung
-
                 itemType: 'button',
                 buttonOptions: {
                     text: 'Auszahlen',
@@ -62,6 +67,7 @@ let AccountPayoutProc = function () {
         }]
     }).dxForm('instance');
 
+    // Zeigt den aktuellen Kontostand im Datenfeld "aktueller Kontostand" an, wenn ein Konto ausgewählt wurde
     eForm.getEditor('accountID').on('valueChanged', function(e) {
         let aAccID = e.value;
         let iBalance = accManager.GetAccount(aAccID).Balance;
@@ -70,6 +76,7 @@ let AccountPayoutProc = function () {
         eForm.getEditor('accountBalance').option('value', iBalance);
     });
 
+    // Event, welches bei Knopfdruck ausgelöst wird
     $('#account-payout-form-container').on('submit', function(e) {
         // Daten abholen
         let iAccountID = eForm.getEditor('accountID').option('value');

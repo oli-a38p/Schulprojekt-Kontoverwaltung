@@ -7,6 +7,7 @@ let accManager = new AccountManager();
 // Tab-Werte auf der Website
 const aTabs = [
     {
+        // Daten zum Tab "Neues Konto anlegen"
         id: 0,
         text: 'Neues Konto anlegen',
         icon: 'user',
@@ -18,8 +19,9 @@ const aTabs = [
                 '<hr>' +
                 '<p id="result-text"></p>' +
             '</div>',
-        func: AccountCreationProc
+        func: AccountCreationProc // aufzurufende Funktion in accountCreation.js
     }, {
+        // Daten zum Tab "Kontoauszug"
         id: 1,
         text: 'Kontoauszug',
         icon: 'doc',
@@ -37,8 +39,9 @@ const aTabs = [
                 '<p>Kontoinhaber: <span class="text-bold" id="result-accountOwner"></span></p>' +
                 '<p>Guthaben: <span class="text-bold" id="result-accountBalance"></span></p>' +
             '</div>',
-        func: AccountStatementProc
+        func: AccountStatementProc // aufzurufende Funktion in accountStatement.js
     }, {
+        // Daten zum Tab "Einzahlung"
         id: 2,
         text: 'Einzahlung',
         icon: 'add',
@@ -50,8 +53,9 @@ const aTabs = [
                 '<hr>' +
                 '<p class="success-text">Dem Konto <span class="text-bold" id="result-accountOwner"></span> wurden <span class="text-bold" id="result-value"></span> EUR eingezahlt.</p>' +
             '</div>',
-        func: AccountDepositProc
+        func: AccountDepositProc // aufzurufende Funktion in accountDeposit.js
     }, {
+        // Daten zum Tab "Auszahlung"
         id: 3,
         text: 'Auszahlung',
         icon: 'minus',
@@ -63,8 +67,9 @@ const aTabs = [
                 '<hr>' +
                 '<p id="result-text"></p>' +
             '</div>',
-        func: AccountPayoutProc
+        func: AccountPayoutProc // aufzurufende Funktion in accountPayout.js
     }, {
+        // Daten zum Tab "Konto löschen"
         id: 4,
         text: 'Konto löschen',
         icon: 'remove',
@@ -78,6 +83,7 @@ const aTabs = [
             '</div>',
         func: AccountDeletionProc
     }, {
+        // Daten zum Tab "Systeminformationen"
         id: 5,
         text: 'Systeminformationen',
         icon: 'info',
@@ -94,18 +100,21 @@ const aTabs = [
             '<h3>Unterstützung</h3>' +
             '<p>Unterstützt durch <a href="https://js.devexpress.com/" target="_blank">DevExtreme JavaScript-Komponenten</a> Version <span class="text-bold" id="dx-version"></span> von DevExpress.</p>' +
             '</div>',
-        func: SysInfo
+        func: SysInfo // aufzurufende Funktion in sysInfo.js
     }
 ];
 
+// Komponente für die Tab-Navigation
 const eTabs = $('#tabs > .tabs-container').dxTabs({
-    dataSource: aTabs,
+    dataSource: aTabs, // Tab-Daten
     selectedIndex: 0,
     onItemClick(e) {
+        // Anzeige des Tab-Inhaltes
         $('#tab-content').html(e.itemData.content);
         e.itemData.func();
     },
     onInitialized(e) {
+        // ersten Tab aufrufen, nachdem die Website geladen wurde
         $('#tab-content').html(aTabs[0].content);
         aTabs[0].func();
     }
