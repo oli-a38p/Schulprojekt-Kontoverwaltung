@@ -33,10 +33,6 @@ class BankAccountBase {
         this.ID = ID;
         this.CreationDate = new Date();
     }
-
-    get CreationDateString() {
-        return this.CreationDate.toLocaleString();
-    }
 }
 
 class BankSavingAccount extends BankAccountBase {
@@ -65,13 +61,17 @@ class BankAccountListBase {
     #iIDPoolMin = 0;
     _atListType = 0;
 
-    constructor(IDPoolMin, IDPoolMax) {
+    constructor(IDPoolMin, IDPoolMax, ListType) {
         if (IDPoolMax - IDPoolMin <= 0) {
             throw new AccountError('Fehler: Ungültiger ID-Pool');
         }
 
+        this._atListType = ListType;
         this.#iIDPoolMin = IDPoolMin;
         this.#iIDPoolMax = IDPoolMax;
+
+        // Kontodaten laden
+        this.LoadFromLocalStorage();
     }
 
     AddAccount(AccountName, AccountOwner) {
@@ -87,6 +87,8 @@ class BankAccountListBase {
             aAccount.Owner = AccountOwner;
             this.#aAccounts.push(aAccount);
 
+            // speichern
+            this.SaveToLocalStorage();
             return aAccount;
         }
         return null;
@@ -127,12 +129,23 @@ class BankAccountListBase {
         return this.TotalAvailableSpace - this.#aAccounts.length;
     }
 
-    get TotalAvailableSpace() {
-        return this.#iIDPoolMax - this.#iIDPoolMin + 1;
-    }
-
     IDPoolContains(ID) {
         return (this.#iIDPoolMin <= ID) && (ID <= this.#iIDPoolMax);
+    }
+
+    LoadFromLocalStorage() {
+        if (localStorage.getItem(AccountTypeName[this._atListType]) == null) {
+            return;
+        }
+
+        let jsonItems = JSON.parse(localStorage.getItem(AccountTypeName[this._atListType]));
+
+        jsonItems.forEach((element) => {
+            // Datum zurück nach Wert formatieren (wurde als String gespeichert)
+            element.CreationDate = new Date(Date.parse(element.CreationDate));
+        });
+
+        this.#aAccounts = jsonItems;
     }
 
     RemoveAccount(AccountID) {
@@ -140,25 +153,35 @@ class BankAccountListBase {
         for (let i = 0; i <= this.#aAccounts.length - 1; i++) {
             if (this.#aAccounts[i].ID == AccountID) {
                 this.#aAccounts.splice(i, 1);
+
+                // speichern
+                this.SaveToLocalStorage();
                 return true;
             }
         }
 
         return false;
     }
+
+    SaveToLocalStorage() {
+        let sAccounts = JSON.stringify(this.#aAccounts);
+        localStorage.setItem(AccountTypeName[this._atListType], sAccounts);
+    }
+
+    get TotalAvailableSpace() {
+        return this.#iIDPoolMax - this.#iIDPoolMin + 1;
+    }
 }
 
 class BankSavingAccountList extends BankAccountListBase {
     constructor(IDPoolMin, IDPoolMax) {
-        super(IDPoolMin, IDPoolMax);
-        this._atListType = AccountType.SavingAccount;
+        super(IDPoolMin, IDPoolMax, AccountType.SavingAccount);
     }
 }
 
 class BankCheckingAccountList extends BankAccountListBase {
     constructor(IDPoolMin, IDPoolMax) {
-        super(IDPoolMin, IDPoolMax);
-        this._atListType = AccountType.CheckingAccount;
+        super(IDPoolMin, IDPoolMax, AccountType.CheckingAccount);
     }
 }
 
@@ -235,6 +258,11 @@ class AccountManager {
 
     get LastError() {
         return this.#sLastError;
+    }
+
+    SaveToLocalStorage() {
+        this.#aSavingAccounts.SaveToLocalStorage();
+        this.#aCheckingAccounts.SaveToLocalStorage();
     }
 
     get SavingAccounts() {

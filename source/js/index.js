@@ -4,69 +4,7 @@ DevExpress.localization.locale(navigator.language);
 // Verwaltungs-Objekt der Konten
 let accManager = new AccountManager();
 
-let AccountDeletionProc = function () {
-    let eForm = $('#account-deletion-form').dxForm({
-        colCount: 1,
-        items: [{
-            itemType: 'group',
-            caption: 'Kontolöschun',
-            colCount: 1,
-            items: [{
-                dataField: 'accountID',
-                isRequired: true,
-                editorType: 'dxSelectBox',
-                editorOptions: {
-                    // Datenquelle
-                    dataSource: new DevExpress.data.DataSource({
-                        store: accManager.AccountSelectionValues,
-                        paginate: true,
-                        pageSize: 10,
-                        sort: [  
-                            { desc: false }  
-                        ] 
-                    }),
-                    valueExpr: 'ID',
-                    displayExpr: 'displayText',
-                    searchEnabled: true
-                },
-                label: {
-                    text: 'Konto auswählen'
-                },
-                validationRules: [{ type: 'required' }]
-            }, {
-                // Button für Bestätigung
-
-                itemType: 'button',
-                buttonOptions: {
-                    text: 'Löschen',
-                    useSubmitBehavior: true
-                }
-            }]
-        }]
-    }).dxForm('instance');
-
-    $('#account-deletion-form-container').on('submit', function(e) {
-        // Daten abholen
-        let iAccountID = eForm.getEditor('accountID').option('value');
-        let aAccount = accManager.GetAccount(iAccountID);
-
-        if (aAccount != null) {
-            let sName = aAccount.Name;
-            let sOwner = aAccount.Owner;
-
-            accManager.RemoveAccount(iAccountID);
-            eForm.getEditor('accountID').option('dataSource', accManager.AccountSelectionValues);
-
-            $('#result-accountName').text(sName);
-            $('#result-accountOwner').text(sOwner);
-            $('#result').show();
-        }
-
-        // Standardevent verhindern
-        e.preventDefault();
-    });
-};
-
+// Tab-Werte auf der Website
 const aTabs = [
     {
         id: 0,
@@ -94,7 +32,7 @@ const aTabs = [
                 '<h3>Kontoauszug</h3>' +
                 '<p>Kontonr.: <span class="text-bold" id="result-accountID"></span></p>' +
                 '<p>Kontotyp: <span class="text-bold" id="result-accountType"></span></p>' +
-                '<p>Konto angelegt: <span class="text-bold" id="result-accountCreationDate"></span></p>' +
+                '<p>Konto erstellt: <span class="text-bold" id="result-accountCreationDate"></span></p>' +
                 '<p>Kontoname: <span class="text-bold" id="result-accountName"></span></p>' +
                 '<p>Kontoinhaber: <span class="text-bold" id="result-accountOwner"></span></p>' +
                 '<p>Guthaben: <span class="text-bold" id="result-accountBalance"></span></p>' +
@@ -110,7 +48,7 @@ const aTabs = [
             '</form>' +
             '<div id="result">' +
                 '<hr>' +
-                '<p class="success-text">Vom dem Konto <span class="text-bold" id="result-accountOwner"></span> wurden <span class="text-bold" id="result-value"></span> EUR ausgezahlt.</p>' +
+                '<p class="success-text">Dem Konto <span class="text-bold" id="result-accountOwner"></span> wurden <span class="text-bold" id="result-value"></span> EUR eingezahlt.</p>' +
             '</div>',
         func: AccountDepositProc
     }, {

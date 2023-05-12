@@ -1,10 +1,9 @@
-let AccountStatementProc = function () {
-    // Eingabeformular für Kontoauszug
-    let eForm = $('#account-statement-form').dxForm({
+let AccountDeletionProc = function () {
+    let eForm = $('#account-deletion-form').dxForm({
         colCount: 1,
         items: [{
             itemType: 'group',
-            caption: 'Kontoauszug erstellen',
+            caption: 'Kontolöschun',
             colCount: 1,
             items: [{
                 dataField: 'accountID',
@@ -33,28 +32,28 @@ let AccountStatementProc = function () {
 
                 itemType: 'button',
                 buttonOptions: {
-                    text: 'Kontoauszug erstellen',
+                    text: 'Löschen',
                     useSubmitBehavior: true
                 }
             }]
         }]
     }).dxForm('instance');
 
-    $('#account-statement-form-container').on('submit', function(e) {
+    $('#account-deletion-form-container').on('submit', function(e) {
         // Daten abholen
         let iAccountID = eForm.getEditor('accountID').option('value');
         let aAccount = accManager.GetAccount(iAccountID);
 
         if (aAccount != null) {
-            $('#result-accountID').text(aAccount.ID);
-            $('#result-accountType').text(AccountTypeName[aAccount.Type]);
-            $('#result-accountCreationDate').text(aAccount.CreationDate.toLocaleString());
-            $('#result-accountName').text(aAccount.Name);
-            $('#result-accountOwner').text(aAccount.Owner);
-            $('#result-accountBalance').text(aAccount.Balance.toFixed(2) + ' EUR');
+            let sName = aAccount.Name;
+            let sOwner = aAccount.Owner;
+
+            accManager.RemoveAccount(iAccountID);
+            eForm.getEditor('accountID').option('dataSource', accManager.AccountSelectionValues);
+
+            $('#result-accountName').text(sName);
+            $('#result-accountOwner').text(sOwner);
             $('#result').show();
-        } else {
-            $('#result').hide();
         }
 
         // Standardevent verhindern

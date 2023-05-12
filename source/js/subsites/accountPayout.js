@@ -80,6 +80,9 @@ let AccountPayoutProc = function () {
             if (aAccount.Balance >= iBalance) {
                 aAccount.Balance -= iBalance;
 
+                // Daten speichern
+                accManager.SaveToLocalStorage();
+
                 // Guthaben anzeigen 
                 eForm.getEditor('accountBalance').option('value', aAccount.Balance);
 

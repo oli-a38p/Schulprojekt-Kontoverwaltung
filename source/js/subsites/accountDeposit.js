@@ -79,13 +79,16 @@ let AccountDepositProc = function () {
         if (iBalance > 0) {
             aAccount.Balance += iBalance;
 
+            // Daten speichern
+            accManager.SaveToLocalStorage();
+
             // Guthaben anzeigen 
             eForm.getEditor('accountBalance').option('value', aAccount.Balance);
 
             if (aAccount != null) {
                 $('#result-accountOwner').text(aAccount.Name);
                 $('#result-value').text(iBalance.toFixed(2));
-                $('#result').show();
+                $('#result').show();    
             } else {
                 $('#result').hide();
             }
