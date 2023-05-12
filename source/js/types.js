@@ -302,8 +302,8 @@ class AccountManager {
      * Konstruktor zur Erzeugung der Kontoverwaltung
      */
     constructor() {
-        this.#aSavingAccounts = new BankSavingAccountList(10, 19);
-        this.#aCheckingAccounts = new BankCheckingAccountList(20, 29);
+        this.#aSavingAccounts = new BankSavingAccountList(100, 199);
+        this.#aCheckingAccounts = new BankCheckingAccountList(200, 299);
     }
 
     /**
@@ -365,7 +365,7 @@ class AccountManager {
         aAccounts.forEach((element) => {
             aResult.push({
                 'ID': element.ID,
-                'displayText': 'Nr. ' + element.ID + ' | Name ' + element.Name + ' | Inhaber ' + element.Owner
+                'displayText': 'Kontonr. ' + element.ID + ' | Name ' + element.Name + ' | Inhaber ' + element.Owner
             });
         });
 

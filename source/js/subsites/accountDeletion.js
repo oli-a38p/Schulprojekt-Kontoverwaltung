@@ -9,7 +9,7 @@ let AccountDeletionProc = function () {
             caption: 'Konto löschen',
             colCount: 1,
             items: [{
-                // Datenfeld für die Kontotyp-Auswahl
+                // Datenfeld zur Auswahl des Kontos
                 dataField: 'accountID',
                 isRequired: true,
                 editorType: 'dxSelectBox',
